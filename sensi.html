@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 SensiPro - Generador Universal de Sensibilidad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 1.1em;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            color: #00d4ff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #c0c0c0;
+            font-weight: 500;
+        }
+
+        select, input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #00d4ff, #7b2cbf);
+            color: white;
+            width: 100%;
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #00b894, #00cec9);
+            color: white;
+        }
+
+        .sensi-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .sensi-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            transition: transform 0.3s;
+        }
+
+        .sensi-item:hover {
+            transform: translateY(-5px);
+            border-color: #00d4ff;
+        }
+
+        .sensi-item .label {
+            font-size: 0.9em;
+            color: #a0a0a0;
+            margin-bottom: 8px;
+        }
+
+        .sensi-item .value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #00d4ff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .sensi-item .range {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #a0a0a0;
+        }
+
+        .tab.active {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .info-box {
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 4px solid #00d4ff;
+            padding: 15px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
+
+        .device-specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .spec-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .spec-item .spec-label {
+            font-size: 0.8em;
+            color: #888;
+        }
+
+        .spec-item .spec-value {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #fff;
+            margin-top: 4px;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 212, 255, 0.2);
+            border: 1px solid #00d4ff;
+            color: #00d4ff;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+        }
+
+        .copy-btn:hover {
+            background: rgba(0, 212, 255, 0.3);
+        }
+
+        .code-block {
+            position: relative;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #00b894;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .slider-container {
+            margin-top: 10px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #00d4ff;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .preset-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #a0a0a0;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+
+        .preset-btn:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comparison-table th {
+            color: #00d4ff;
+            font-weight: 600;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .badge-pro {
+            background: linear-gradient(45deg, #f39c12, #e74c3c);
+            color: white;
+        }
+
+        .badge-optimal {
+            background: linear-gradient(45deg, #00b894, #00cec9);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 SensiPro Generator</h1>
+            <p class="subtitle">Generador universal de sensibilidad para cualquier dispositivo</p>
+        </header>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('generator')">⚡ Generador</div>
+            <div class="tab" onclick="switchTab('converter')">🔄 Conversor Universal</div>
+            <div class="tab" onclick="switchTab('custom')">⚙️ Personalizado</div>
+            <div class="tab" onclick="switchTab('share')">📤 Compartir</div>
+        </div>
+
+        <!-- GENERADOR -->
+        <div id="generator" class="tab-content active">
+            <div class="card">
+                <h2>📱 Selecciona tu dispositivo</h2>
+                <div class="info-box">
+                    Selecciona tu modelo exacto para generar una configuración óptima basada en las especificaciones técnicas de tu pantalla.
+                </div>
+                
+                <div class="form-group">
+                    <label>Marca del dispositivo</label>
+                    <select id="brand" onchange="loadModels()">
+                        <option value="">Selecciona marca...</option>
+                        <option value="samsung">Samsung</option>
+                        <option value="xiaomi">Xiaomi / Redmi / POCO</option>
+                        <option value="iphone">iPhone</option>
+                        <option value="realme">realme</option>
+                        <option value="oppo">OPPO</option>
+                        <option value="vivo">vivo</option>
+                        <option value="motorola">Motorola</option>
+                        <option value="huawei">Huawei</option>
+                        <option value="oneplus">OnePlus</option>
+                        <option value="google">Google Pixel</option>
+                        <option value="other">Otro / Genérico</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Modelo específico</label>
+                    <select id="model" onchange="showDeviceSpecs()">
+                        <option value="">Primero selecciona una marca...</option>
+                    </select>
+                </div>
+
+                <div id="deviceInfo" class="hidden">
+                    <div class="device-specs" id="specsDisplay"></div>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>Juego</label>
+                    <select id="game">
+                        <option value="freefire">Free Fire</option>
+                        <option value="pubg">PUBG Mobile</option>
+                        <option value="cod">Call of Duty Mobile</option>
+                        <option value="fortnite">Fortnite Mobile</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Estilo de juego</label>
+                    <select id="playstyle">
+                        <option value="balanced">Equilibrado (Recomendado)</option>
+                        <option value="aggressive">Agresivo / Rush</option>
+                        <option value="sniper">Francotirador / Precisión</option>
+                        <option value="smg">SMG / Cerca</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>DPI del dispositivo (opcional, se auto-detecta)</label>
+                    <input type="number" id="customDpi" placeholder="Dejar en blanco para auto">
+                </div>
+
+                <button class="btn btn-primary" onclick="generateSensi()">
+                    🎯 Generar Configuración Óptima
+                </button>
+            </div>
+
+            <div id="results" class="card hidden">
+                <h2>✅ Tu configuración óptima <span class="badge badge-optimal">OPTIMIZADA</span></h2>
+                <div class="info-box" id="recommendationText"></div>
+                
+                <div class="sensi-display" id="sensiResults"></div>
+
+                <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-success" onclick="copyConfig()">📋 Copiar configuración</button>
+                    <button class="btn btn-secondary" onclick="exportConfig()">💾 Exportar archivo</button>
+                    <button class="btn btn-secondary" onclick="generateQR()">📱 Generar QR</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONVERSOR -->
+        <div id="converter" class="tab-content">
+            <div class="card">
+                <h2>🔄 Conversor Universal de Sensibilidad</h2>
+                <div class="info-box">
+                    Convierte cualquier configuración de sensibilidad entre dispositivos diferentes. Útil cuando ves una config de un YouTuber con otro celular.
+                </div>
+
+                <div class="grid-2">
+                    <div>
+                        <h3 style="color: #00d4ff; margin-bottom: 15px;">📱 Dispositivo ORIGEN</h3>
+                        <div class="form-group">
+                            <label>Modelo o DPI</label>
+                            <select id="sourceDevice" onchange="setSourceDpi()">
+                                <option value="320">Genérico (320 DPI)</option>
+                                <option value="392">Samsung S20 (392 DPI)</option>
+                                <option value="420">Xiaomi Redmi Note (420 DPI)</option>
+                                <option value="460">iPhone 12 (460 DPI)</option>
+                                <option value="480">OnePlus 9 (480 DPI)</option>
+                                <option value="custom">Personalizado...</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="sourceDpiContainer" style="display:none;">
+                            <label>DPI personalizado</label>
+                            <input type="number" id="sourceDpi" value="320">
+                        </div>
+                        <div class="form-group">
+                            <label>Resolución</label>
+                            <select id="sourceRes">
+                                <option value="1">FHD+ (1080p)</option>
+                                <option value="1.15">QHD+ (1440p)</option>
+                                <option value="0.75">HD+ (720p)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 style="color: #00d4ff; margin-bottom: 15px;">📱 Tu dispositivo (DESTINO)</h3>
+                        <div class="form-group">
+                            <label>Modelo o DPI</label>
+                            <select id="targetDevice" onchange="setTargetDpi()">
+                                <option value="420">Xiaomi Redmi Note (420 DPI)</option>
+                                <option value="392">Samsung S20 (392 DPI)</option>
+                                <option value="460">iPhone 12 (460 DPI)</option>
+                                <option value="480">OnePlus 9 (480 DPI)</option>
+                                <option value="320">Genérico (320 DPI)</option>
+                                <option value="custom">Personalizado...</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="targetDpiContainer" style="display:none;">
+                            <label>DPI personalizado</label>
+                            <input type="number" id="targetDpi" value="420">
+                        </div>
+                        <div class="form-group">
+                            <label>Resolución</label>
+                            <select id="targetRes">
+                                <option value="1">FHD+ (1080p)</option>
+                                <option value="1.15">QHD+ (1440p)</option>
+                                <option value="0.75">HD+ (720p)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>Sensibilidad ORIGEN (0-100)</label>
+                    <div class="grid-3">
+                        <div>
+                            <label style="font-size: 0.9em;">General</label>
+                            <input type="number" id="convGeneral" value="50" min="0" max="100">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.9em;">Punto Rojo</label>
+                            <input type="number" id="convRedDot" value="60" min="0" max="100">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.9em;">Mira 4x</label>
+                            <input type="number" id="conv4x" value="30" min="0" max="100">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="convertSensi()">
+                    🔄 Convertir a mi dispositivo
+                </button>
+
+                <div id="convertResults" class="hidden" style="margin-top: 20px;">
+                    <h3 style="color: #00d4ff; margin-bottom: 15px;">📊 Resultado convertido</h3>
+                    <div class="sensi-display" id="convertedValues"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PERSONALIZADO -->
+        <div id="custom" class="tab-content">
+            <div class="card">
+                <h2>⚙️ Configuración Manual Avanzada</h2>
+                
+                <div class="form-group">
+                    <label>DPI del dispositivo</label>
+                    <input type="number" id="manualDpi" value="420" min="120" max="800">
+                    <div class="slider-container">
+                        <input type="range" min="120" max="800" value="420" oninput="document.getElementById('manualDpi').value = this.value; updateManualSensi()">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Tamaño pantalla (pulgadas)</label>
+                        <input type="number" id="manualSize" value="6.5" step="0.1" min="4" max="8">
+                    </div>
+                    <div class="form-group">
+                        <label>Tasa de refresco (Hz)</label>
+                        <select id="manualHz">
+                            <option value="60">60 Hz</option>
+                            <option value="90">90 Hz</option>
+                            <option value="120" selected>120 Hz</option>
+                            <option value="144">144 Hz</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Multiplicador de velocidad</label>
+                    <div class="preset-buttons">
+                        <button class="preset-btn" onclick="setMultiplier(0.8)">Lento (0.8x)</button>
+                        <button class="preset-btn" onclick="setMultiplier(1.0)">Normal (1.0x)</button>
+                        <button class="preset-btn" onclick="setMultiplier(1.2)">Rápido (1.2x)</button>
+                        <button class="preset-btn" onclick="setMultiplier(1.5)">Muy rápido (1.5x)</button>
+                    </div>
+                    <input type="hidden" id="multiplier" value="1.0">
+                </div>
+
+                <button class="btn btn-primary" onclick="generateManualSensi()">
+                    ⚙️ Generar Config Personalizada
+                </button>
+
+                <div id="manualResults" class="hidden" style="margin-top: 20px;">
+                    <div class="sensi-display" id="manualSensiDisplay"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPARTIR -->
+        <div id="share" class="tab-content">
+            <div class="card">
+                <h2>📤 Compartir / Importar Configuración</h2>
+                
+                <div class="form-group">
+                    <label>Código de configuración (pega aquí para importar)</label>
+                    <textarea id="importCode" rows="4" style="width: 100%; background: rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 15px; color: #fff; font-family: monospace;" placeholder="Pega el código aquí..."></textarea>
+                </div>
+
+                <button class="btn btn-primary" onclick="importConfig()" style="margin-bottom: 20px;">
+                    📥 Importar configuración
+                </button>
+
+                <div id="importedConfig" class="hidden">
+                    <h3 style="color: #00d4ff; margin: 20px 0 15px;">Configuración importada:</h3>
+                    <div class="sensi-display" id="importedDisplay"></div>
+                </div>
+
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <h3 style="color: #00d4ff; margin-bottom: 15px;">Cómo funciona el sistema</h3>
+                    <p style="color: #a0a0a0; line-height: 1.6;">
+                        Esta app utiliza un algoritmo basado en las especificaciones técnicas de tu dispositivo (DPI, resolución, tamaño de pantalla, tasa de refresco) para calcular la sensibilidad óptima. El sistema de conversión universal permite adaptar cualquier configuración entre dispositivos diferentes manteniendo la misma "velocidad de puntero" relativa.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">¡Configuración copiada!</div>
+
+    <script>
+        // Base de datos de dispositivos
+        const devices = {
+            samsung: {
+                "Galaxy S24 Ultra": { dpi: 505, size: 6.8, res: "QHD+", hz: 120 },
+                "Galaxy S24+": { dpi: 458, size: 6.7, res: "QHD+", hz: 120 },
+                "Galaxy S24": { dpi: 416, size: 6.2, res: "FHD+", hz: 120 },
+                "Galaxy S23 Ultra": { dpi: 500, size: 6.8, res: "QHD+", hz: 120 },
+                "Galaxy S23+": { dpi: 393, size: 6.6, res: "FHD+", hz: 120 },
+                "Galaxy S23": { dpi: 425, size: 6.1, res: "FHD+", hz: 120 },
+                "Galaxy S22 Ultra": { dpi: 500, size: 6.8, res: "QHD+", hz: 120 },
+                "Galaxy A55": { dpi: 390, size: 6.6, res: "FHD+", hz: 120 },
+                "Galaxy A54": { dpi: 390, size: 6.4, res: "FHD+", hz: 120 },
+                "Galaxy A35": { dpi: 385, size: 6.6, res: "FHD+", hz: 120 },
+                "Galaxy A34": { dpi: 390, size: 6.6, res: "FHD+", hz: 120 },
+                "Galaxy A25": { dpi: 400, size: 6.5, res: "FHD+", hz: 120 },
+                "Galaxy A15": { dpi: 396, size: 6.5, res: "FHD+", hz: 90 },
+                "Galaxy M55": { dpi: 385, size: 6.7, res: "FHD+", hz: 120 },
+                "Galaxy M35": { dpi: 390, size: 6.6, res: "FHD+", hz: 120 },
+                "Galaxy M15": { dpi: 390, size: 6.5, res: "FHD+", hz: 90 },
+                "Galaxy F55": { dpi: 385, size: 6.7, res: "FHD+", hz: 120 },
+                "Galaxy F15": { dpi: 390, size: 6.5, res: "FHD+", hz: 90 }
+            },
+            xiaomi: {
+                "Redmi Note 13 Pro+": { dpi: 446, size: 6.67, res: "FHD+", hz: 120 },
+                "Redmi Note 13 Pro": { dpi: 446, size: 6.67, res: "FHD+", hz: 120 },
+                "Redmi Note 13": { dpi: 395, size: 6.67, res: "FHD+", hz: 120 },
+                "Redmi Note 12 Pro+": { dpi: 395, size: 6.67, res: "FHD+", hz: 120 },
+                "Redmi Note 12 Pro": { dpi: 395, size: 6.67, res: "FHD+", hz: 120 },
+                "Redmi Note 12": { dpi: 395, size: 6.67, res: "FHD+", hz: 120 },
+                "Redmi Note 11 Pro+": { dpi: 395, size: 6.67, res: "FHD+", hz: 120 },
+                "Redmi Note 11 Pro": { dpi: 395, size: 6.67, res: "FHD+", hz: 120 },
+                "Redmi Note 11": { dpi: 409, size: 6.43, res: "FHD+", hz: 90 },
+                "Redmi 13C": { dpi: 396, size: 6.74, res: "HD+", hz: 90 },
+                "Redmi 12": { dpi: 393, size: 6.79, res: "FHD+", hz: 90 },
+                "POCO X6 Pro": { dpi: 446, size: 6.67, res: "FHD+", hz: 120 },
+                "POCO X6": { dpi: 395, size: 6.67, res: "FHD+", hz: 120 },
+                "POCO X5 Pro": { dpi: 395, size: 6.67, res: "FHD+", hz: 120 },
+                "POCO F6 Pro": { dpi: 526, size: 6.67, res: "QHD+", hz: 120 },
+                "POCO F6": { dpi: 446, size: 6.67, res: "FHD+", hz: 120 },
+                "POCO F5 Pro": { dpi: 526, size: 6.67, res: "QHD+", hz: 120 },
+                "POCO F5": { dpi: 395, size: 6.67, res: "FHD+", hz: 120 },
+                "Xiaomi 14 Ultra": { dpi: 522, size: 6.73, res: "QHD+", hz: 120 },
+                "Xiaomi 14": { dpi: 460, size: 6.36, res: "FHD+", hz: 120 },
+                "Xiaomi 13T Pro": { dpi: 446, size: 6.67, res: "FHD+", hz: 144 },
+                "Xiaomi 13T": { dpi: 446, size: 6.67, res: "FHD+", hz: 144 }
+            },
+            iphone: {
+                "iPhone 15 Pro Max": { dpi: 460, size: 6.7, res: "FHD+", hz: 120 },
+                "iPhone 15 Pro": { dpi: 460, size: 6.1, res: "FHD+", hz: 120 },
+                "iPhone 15 Plus": { dpi: 460, size: 6.7, res: "FHD+", hz: 60 },
+                "iPhone 15": { dpi: 460, size: 6.1, res: "FHD+", hz: 60 },
+                "iPhone 14 Pro Max": { dpi: 460, size: 6.7, res: "FHD+", hz: 120 },
+                "iPhone 14 Pro": { dpi: 460, size: 6.1, res: "FHD+", hz: 120 },
+                "iPhone 14 Plus": { dpi: 458, size: 6.7, res: "FHD+", hz: 60 },
+                "iPhone 14": { dpi: 460, size: 6.1, res: "FHD+", hz: 60 },
+                "iPhone 13 Pro Max": { dpi: 458, size: 6.7, res: "FHD+", hz: 120 },
+                "iPhone 13 Pro": { dpi: 460, size: 6.1, res: "FHD+", hz: 120 },
+                "iPhone 13": { dpi: 460, size: 6.1, res: "FHD+", hz: 60 },
+                "iPhone 12 Pro Max": { dpi: 458, size: 6.7, res: "FHD+", hz: 60 },
+                "iPhone 12 Pro": { dpi: 460, size: 6.1, res: "FHD+", hz: 60 },
+                "iPhone 12": { dpi: 460, size: 6.1, res: "FHD+", hz: 60 },
+                "iPhone 11 Pro Max": { dpi: 458, size: 6.5, res: "FHD+", hz: 60 },
+                "iPhone 11": { dpi: 326, size: 6.1, res: "HD+", hz: 60 },
+                "iPhone SE (2022)": { dpi: 326, size: 4.7, res: "HD+", hz: 60 }
+            },
+            realme: {
+                "realme GT 6": { dpi: 450, size: 6.78, res: "FHD+", hz: 120 },
+                "realme GT 6T": { dpi: 450, size: 6.78, res: "FHD+", hz: 120 },
+                "realme GT Neo 6": { dpi: 450, size: 6.78, res: "FHD+", hz: 120 },
+                "realme 12 Pro+": { dpi: 395, size: 6.7, res: "FHD+", hz: 120 },
+                "realme 12 Pro": { dpi: 392, size: 6.7, res: "FHD+", hz: 120 },
+                "realme 12": { dpi: 392, size: 6.72, res: "FHD+", hz: 120 },
+                "realme 11 Pro+": { dpi: 395, size: 6.7, res: "FHD+", hz: 120 },
+                "realme 11 Pro": { dpi: 392, size: 6.7, res: "FHD+", hz: 120 },
+                "realme C67": { dpi: 391, size: 6.72, res: "FHD+", hz: 90 },
+                "realme C65": { dpi: 391, size: 6.74, res: "HD+", hz: 90 },
+                "realme C61": { dpi: 260, size: 6.74, res: "HD+", hz: 90 },
+                "realme C53": { dpi: 391, size: 6.74, res: "HD+", hz: 90 },
+                "realme Narzo 70 Pro": { dpi: 392, size: 6.67, res: "FHD+", hz: 120 },
+                "realme Narzo 70": { dpi: 392, size: 6.72, res: "FHD+", hz: 120 },
+                "realme Narzo 60 Pro": { dpi: 395, size: 6.7, res: "FHD+", hz: 120 }
+            },
+            oppo: {
+                "OPPO Find X7 Ultra": { dpi: 510, size: 6.82, res: "QHD+", hz: 120 },
+                "OPPO Find X7": { dpi: 450, size: 6.78, res: "FHD+", hz: 120 },
+                "OPPO Reno 12 Pro": { dpi: 450, size: 6.7, res: "FHD+", hz: 120 },
+                "OPPO Reno 12": { dpi: 394, size: 6.7, res: "FHD+", hz: 120 },
+                "OPPO Reno 11 Pro": { dpi: 450, size: 6.74, res: "FHD+", hz: 120 },
+                "OPPO Reno 11": { dpi: 394, size: 6.7, res: "FHD+", hz: 120 },
+                "OPPO Reno 8 Pro": { dpi: 394, size: 6.7, res: "FHD+", hz: 120 },
+                "OPPO A98": { dpi: 391, size: 6.72, res: "FHD+", hz: 120 },
+                "OPPO A79": { dpi: 391, size: 6.72, res: "FHD+", hz: 90 },
+                "OPPO A78": { dpi: 391, size: 6.56, res: "FHD+", hz: 90 },
+                "OPPO A58": { dpi: 391, size: 6.72, res: "FHD+", hz: 90 },
+                "OPPO A38": { dpi: 391, size: 6.56, res: "HD+", hz: 90 }
+            },
+            vivo: {
+                "vivo X100 Ultra": { dpi: 517, size: 6.78, res: "QHD+", hz: 120 },
+                "vivo X100 Pro": { dpi: 452, size: 6.78, res: "FHD+", hz: 120 },
+                "vivo X100": { dpi: 452, size: 6.78, res: "FHD+", hz: 120 },
+                "vivo V30 Pro": { dpi: 452, size: 6.78, res: "FHD+", hz: 120 },
+                "vivo V30": { dpi: 452, size: 6.78, res: "FHD+", hz: 120 },
+                "vivo V29 Pro": { dpi: 452, size: 6.78, res: "FHD+", hz: 120 },
+                "vivo V29": { dpi: 452, size: 6.78, res: "FHD+", hz: 120 },
+                "vivo Y200": { dpi: 388, size: 6.67, res: "FHD+", hz: 120 },
+                "vivo Y100": { dpi: 388, size: 6.67, res: "FHD+", hz: 120 },
+                "vivo Y78": { dpi: 388, size: 6.64, res: "FHD+", hz: 120 },
+                "vivo Y56": { dpi: 388, size: 6.58, res: "FHD+", hz: 90 },
+                "vivo T3 Pro": { dpi: 452, size: 6.77, res: "FHD+", hz: 120 },
+                "vivo T3": { dpi: 388, size: 6.67, res: "FHD+", hz: 120 },
+                "vivo T2 Pro": { dpi: 388, size: 6.78, res: "FHD+", hz: 120 }
+            },
+            motorola: {
+                "Motorola Edge 50 Ultra": { dpi: 446, size: 6.7, res: "FHD+", hz: 144 },
+                "Motorola Edge 50 Pro": { dpi: 446, size: 6.7, res: "FHD+", hz: 144 },
+                "Motorola Edge 50 Fusion": { dpi: 395, size: 6.7, res: "FHD+", hz: 144 },
+                "Motorola Edge 40 Pro": { dpi: 460, size: 6.67, res: "FHD+", hz: 165 },
+                "Motorola Edge 40": { dpi: 402, size: 6.55, res: "FHD+", hz: 144 },
+                "Motorola Edge 30 Pro": { dpi: 400, size: 6.7, res: "FHD+", hz: 144 },
+                "Motorola Edge 30": { dpi: 402, size: 6.5, res: "FHD+", hz: 144 },
+                "Motorola G84": { dpi: 402, size: 6.5, res: "FHD+", hz: 120 },
+                "Motorola G64": { dpi: 391, size: 6.5, res: "FHD+", hz: 120 },
+                "Motorola G54": { dpi: 391, size: 6.5, res: "FHD+", hz: 120 },
+                "Motorola G34": { dpi: 270, size: 6.5, res: "HD+", hz: 120 },
+                "Motorola G24": { dpi: 270, size: 6.56, res: "HD+", hz: 90 }
+            },
+            huawei: {
+                "Huawei Pura 70 Ultra": { dpi: 460, size: 6.8, res: "FHD+", hz: 120 },
+                "Huawei Pura 70 Pro": { dpi: 460, size: 6.8, res: "FHD+", hz: 120 },
+                "Huawei P60 Pro": { dpi: 481, size: 6.67, res: "FHD+", hz: 120 },
+                "Huawei P60": { dpi: 481, size: 6.67, res: "FHD+", hz: 120 },
+                "Huawei Mate 60 Pro": { dpi: 460, size: 6.82, res: "FHD+", hz: 120 },
+                "Huawei Mate 60": { dpi: 460, size: 6.69, res: "FHD+", hz: 120 },
+                "Huawei Nova 12 Pro": { dpi: 429, size: 6.76, res: "FHD+", hz: 120 },
+                "Huawei Nova 12": { dpi: 395, size: 6.7, res: "FHD+", hz: 120 },
+                "Huawei Nova 11 Pro": { dpi: 429, size: 6.78, res: "FHD+", hz: 120 },
+                "Huawei Enjoy 70 Pro": { dpi: 391, size: 6.7, res: "FHD+", hz: 90 },
+                "Huawei Enjoy 60X": { dpi: 270, size: 6.95, res: "HD+", hz: 90 }
+            },
+            oneplus: {
+                "OnePlus 12": { dpi: 510, size: 6.82, res: "QHD+", hz: 120 },
+                "OnePlus 12R": { dpi: 450, size: 6.78, res: "FHD+", hz: 120 },
+                "OnePlus 11": { dpi: 525, size: 6.7, res: "QHD+", hz: 120 },
+                "OnePlus 11R": { dpi: 450, size: 6.74, res: "FHD+", hz: 120 },
+                "OnePlus Open": { dpi: 426, size: 7.82, res: "FHD+", hz: 120 },
+                "OnePlus 10 Pro": { dpi: 525, size: 6.7, res: "QHD+", hz: 120 },
+                "OnePlus 10T": { dpi: 394, size: 6.7, res: "FHD+", hz: 120 },
+                "OnePlus Nord 4": { dpi: 450, size: 6.74, res: "FHD+", hz: 120 },
+                "OnePlus Nord 3": { dpi: 450, size: 6.74, res: "FHD+", hz: 120 },
+                "OnePlus Nord CE 4": { dpi: 450, size: 6.7, res: "FHD+", hz: 120 },
+                "OnePlus Nord CE 3": { dpi: 394, size: 6.7, res: "FHD+", hz: 120 }
+            },
+            google: {
+                "Pixel 8 Pro": { dpi: 489, size: 6.7, res: "QHD+", hz: 120 },
+                "Pixel 8": { dpi: 428, size: 6.2, res: "FHD+", hz: 120 },
+                "Pixel 8a": { dpi: 430, size: 6.1, res: "FHD+", hz: 120 },
+                "Pixel 7 Pro": { dpi: 512, size: 6.7, res: "QHD+", hz: 120 },
+                "Pixel 7": { dpi: 416, size: 6.3, res: "FHD+", hz: 90 },
+                "Pixel 7a": { dpi: 429, size: 6.1, res: "FHD+", hz: 90 },
+                "Pixel 6 Pro": { dpi: 512, size: 6.7, res: "QHD+", hz: 120 },
+                "Pixel 6": { dpi: 411, size: 6.4, res: "FHD+", hz: 90 },
+                "Pixel 6a": { dpi: 429, size: 6.1, res: "FHD+", hz: 60 },
+                "Pixel 5": { dpi: 432, size: 6.0, res: "FHD+", hz: 90 },
+                "Pixel 4a": { dpi: 443, size: 5.81, res: "FHD+", hz: 60 }
+            },
+            other: {
+                "Genérico 6.5\" FHD 60Hz": { dpi: 400, size: 6.5, res: "FHD+", hz: 60 },
+                "Genérico 6.5\" FHD 90Hz": { dpi: 400, size: 6.5, res: "FHD+", hz: 90 },
+                "Genérico 6.5\" FHD 120Hz": { dpi: 400, size: 6.5, res: "FHD+", hz: 120 },
+                "Genérico 6.7\" FHD 120Hz": { dpi: 393, size: 6.7, res: "FHD+", hz: 120 },
+                "Genérico 6.8\" QHD 120Hz": { dpi: 500, size: 6.8, res: "QHD+", hz: 120 },
+                "Tablet 8\" HD": { dpi: 320, size: 8.0, res: "HD+", hz: 60 },
+                "Tablet 10\" FHD": { dpi: 280, size: 10.1, res: "FHD+", hz: 60 }
+            }
+        };
+
+        let currentConfig = null;
+
+        function loadModels() {
+            const brand = document.getElementById('brand').value;
+            const modelSelect = document.getElementById('model');
+            modelSelect.innerHTML = '<option value="">Selecciona modelo...</option>';
+            
+            if (brand && devices[brand]) {
+                Object.keys(devices[brand]).forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model;
+                    option.textContent = model;
+                    modelSelect.appendChild(option);
+                });
+            }
+            
+            document.getElementById('deviceInfo').classList.add('hidden');
+        }
+
+        function showDeviceSpecs() {
+            const brand = document.getElementById('brand').value;
+            const model = document.getElementById('model').value;
+            
+            if (brand && model && devices[brand][model]) {
+                const specs = devices[brand][model];
+                const specsDisplay = document.getElementById('specsDisplay');
+                specsDisplay.innerHTML = `
+                    <div class="spec-item">
+                        <div class="spec-label">DPI</div>
+                        <div class="spec-value">${specs.dpi}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Pantalla</div>
+                        <div class="spec-value">${specs.size}"</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Resolución</div>
+                        <div class="spec-value">${specs.res}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Refresh</div>
+                        <div class="spec-value">${specs.hz}Hz</div>
+                    </div>
+                `;
+                document.getElementById('deviceInfo').classList.remove('hidden');
+            }
+        }
+
+        function calculateSensi(dpi, size, hz, playstyle, game) {
+            // Base calculations
+            const baseGeneral = 75;
+            const baseRedDot = 85;
+            const base2x = 70;
+            const base4x = 55;
+            const baseSniper = 35;
+            const baseFreeLook = 60;
+            
+            // DPI factor (lower DPI = higher sensi needed)
+            const dpiFactor = 400 / dpi;
+            
+            // Size factor (smaller screen = lower sensi for precision)
+            const sizeFactor = size / 6.5;
+            
+            // Hz factor (higher refresh = slightly lower sensi for control)
+            const hzFactor = hz >= 120 ? 0.95 : (hz >= 90 ? 0.98 : 1.0);
+            
+            // Playstyle multipliers
+            const styleMultipliers = {
+                balanced: { general: 1.0, redDot: 1.0, x2: 1.0, x4: 1.0, sniper: 1.0, free: 1.0 },
+                aggressive: { general: 1.15, redDot: 1.2, x2: 1.1, x4: 0.95, sniper: 0.9, free: 1.1 },
+                sniper: { general: 0.9, redDot: 0.85, x2: 0.9, x4: 1.1, sniper: 1.2, free: 0.9 },
+                smg: { general: 1.2, redDot: 1.25, x2: 1.15, x4: 1.0, sniper: 0.85, free: 1.15 }
+            };
+            
+            const mult = styleMultipliers[playstyle];
+            
+            // Game-specific adjustments
+            const gameFactors = {
+                freefire: 1.0,
+                pubg: 0.85,
+                cod: 0.9,
+                fortnite: 1.1
+            };
+            
+            const gFactor = gameFactors[game];
+            
+            // Calculate final values
+            const calculate = (base, styleMult) => {
+                let val = base * dpiFactor * sizeFactor * hzFactor * styleMult * gFactor;
+                return Math.min(100, Math.max(1, Math.round(val)));
+            };
+            
+            return {
+                general: calculate(baseGeneral, mult.general),
+                redDot: calculate(baseRedDot, mult.redDot),
+                x2: calculate(base2x, mult.x2),
+                x4: calculate(base4x, mult.x4),
+                sniper: calculate(baseSniper, mult.sniper),
+                freeLook: calculate(baseFreeLook, mult.free),
+                dpi: dpi,
+                game: game,
+                playstyle: playstyle
+            };
+        }
+
+        function generateSensi() {
+            const brand = document.getElementById('brand').value;
+            const model = document.getElementById('model').value;
+            const game = document.getElementById('game').value;
+            const playstyle = document.getElementById('playstyle').value;
+            const customDpi = document.getElementById('customDpi').value;
+            
+            if (!brand || !model) {
+                showToast('Selecciona marca y modelo primero', 'error');
+                return;
+            }
+            
+            const device = devices[brand][model];
+            const dpi = customDpi ? parseInt(customDpi) : device.dpi;
+            
+            currentConfig = calculateSensi(dpi, device.size, device.hz, playstyle, game);
+            
+            displayResults(currentConfig, device, game, playstyle);
+        }
+
+        function displayResults(config, device, game, playstyle) {
+            const gameNames = {
+                freefire: 'Free Fire',
+                pubg: 'PUBG Mobile',
+                cod: 'Call of Duty Mobile',
+                fortnite: 'Fortnite Mobile'
+            };
+            
+            const styleNames = {
+                balanced: 'Equilibrado',
+                aggressive: 'Agresivo',
+                sniper: 'Francotirador',
+                smg: 'SMG/Cerca'
+            };
+            
+            document.getElementById('recommendationText').innerHTML = `
+                Configuración generada para <strong>${gameNames[game]}</strong> con estilo <strong>${styleNames[playstyle]}</strong>. 
+                Optimizado para ${device.size}" a ${device.hz}Hz con DPI ${config.dpi}.
+            `;
+            
+            const sensiResults = document.getElementById('sensiResults');
+            sensiResults.innerHTML = `
+                <div class="sensi-item">
+                    <div class="label">General / Cámara</div>
+                    <div class="value">${config.general}</div>
+                    <div class="range">0-100</div>
+                </div>
+                <div class="sensi-item">
+                    <div class="label">Punto Rojo</div>
+                    <div class="value">${config.redDot}</div>
+                    <div class="range">0-100</div>
+                </div>
+                <div class="sensi-item">
+                    <div class="label">Mira 2x</div>
+                    <div class="value">${config.x2}</div>
+                    <div class="range">0-100</div>
+                </div>
+                <div class="sensi-item">
+                    <div class="label">Mira 4x</div>
+                    <div class="value">${config.x4}</div>
+                    <div class="range">0-100</div>
+                </div>
+                <div class="sensi-item">
+                    <div class="label">Francotirador</div>
+                    <div class="value">${config.sniper}</div>
+                    <div class="range">0-100</div>
+                </div>
+                <div class="sensi-item">
+                    <div class="label">Vista Libre</div>
+                    <div class="value">${config.freeLook}</div>
+                    <div class="range">0-100</div>
+                </div>
+            `;
+            
+            document.getElementById('results').classList.remove('hidden');
+        }
+
+        function copyConfig() {
+            if (!currentConfig) return;
+            
+            const text = `🎯 SensiPro Config
+📱 DPI: ${currentConfig.dpi}
+🎮 Juego: ${currentConfig.game}
+⚡ Estilo: ${currentConfig.playstyle}
+
+Configuración:
+• General: ${currentConfig.general}
+• Punto Rojo: ${currentConfig.redDot}
+• Mira 2x: ${currentConfig.x2}
+• Mira 4x: ${currentConfig.x4}
+• Francotirador: ${currentConfig.sniper}
+• Vista Libre: ${currentConfig.freeLook}
+
+Generado con SensiPro`;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('¡Configuración copiada!');
+            });
+        }
+
+        function exportConfig() {
+            if (!currentConfig) return;
+            
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentConfig, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "sensipro_config.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+            
+            showToast('¡Archivo descargado!');
+        }
+
+        function generateQR() {
+            showToast('Función QR en desarrollo');
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.background = type === 'error' ? '#e74c3c' : '#00b894';
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Conversor functions
+        function setSourceDpi() {
+            const val = document.getElementById('sourceDevice').value;
+            document.getElementById('sourceDpiContainer').style.display = val === 'custom' ? 'block' : 'none';
+        }
+
+        function setTargetDpi() {
+            const val = document.getElementById('targetDevice').value;
+            document.getElementById('targetDpiContainer').style.display = val === 'custom' ? 'block' : 'none';
+        }
+
+        function convertSensi() {
+            const sourceDpi = document.getElementById('sourceDevice').value === 'custom' 
+                ? parseInt(document.getElementById('sourceDpi').value) 
+                : parseInt(document.getElementById('sourceDevice').value);
+                
+            const targetDpi = document.getElementById('targetDevice').value === 'custom'
+                ? parseInt(document.getElementById('targetDpi').value)
+                : parseInt(document.getElementById('targetDevice').value);
+                
+            const sourceRes = parseFloat(document.getElementById('sourceRes').value);
+            const targetRes = parseFloat(document.getElementById('targetRes').value);
+            
+            const general = parseInt(document.getElementById('convGeneral').value);
+            const redDot = parseInt(document.getElementById('convRedDot').value);
+            const x4 = parseInt(document.getElementById('conv4x').value);
+            
+            // Conversion formula: (sourceDpi / targetDpi) * (sourceRes / targetRes) * originalValue
+            const convert = (val) => {
+                let result = (sourceDpi / targetDpi) * (sourceRes / targetRes) * val;
+                return Math.min(100, Math.max(1, Math.round(result)));
+            };
+            
+            const converted = {
+                general: convert(general),
+                redDot: convert(redDot),
+                x4: convert(x4)
+            };
+            
+            document.getElementById('convertedValues').innerHTML = `
+                <div class="sensi-item">
+                    <div class="label">General</div>
+                    <div class="value">${converted.general}</div>
+                    <div class="range">Original: ${general}</div>
+                </div>
+                <div class="sensi-item">
+                    <div class="label">Punto Rojo</div>
+                    <div class="value">${converted.redDot}</div>
+                    <div class="range">Original: ${redDot}</div>
+                </div>
+                <div class="sensi-item">
+                    <div class="label">Mira 4x</div>
+                    <div class="value">${converted.x4}</div>
+                    <div class="range">Original: ${x4}</div>
+                </div>
+            `;
+            
+            document.getElementById('convertResults').classList.remove('hidden');
+        }
+
+        // Manual functions
+        function setMultiplier(val) {
+            document.getElementById('multiplier').value = val;
+            showToast(`Multiplicador: ${val}x`);
+        }
+
+        function generateManualSensi() {
+            const dpi = parseInt(document.getElementById('manualDpi').value);
+            const size = parseFloat(document.getElementById('manualSize').value);
+            const hz = parseInt(document.getElementById('manualHz').value);
+            const multiplier = parseFloat(document.getElementById('multiplier').value);
+            
+            const config = calculateSensi(dpi, size, hz, 'balanced', 'freefire');
+            
+            // Apply multiplier
+            config.general = Math.min(100, Math.round(config.general * multiplier));
+            config.redDot = Math.min(100, Math.round(config.redDot * multiplier));
+            config.x2 = Math.min(100, Math.round(config.x2 * multiplier));
+            config.x4 = Math.min(100, Math.round(config.x4 * multiplier));
+            config.sniper = Math.min(100, Math.round(config.sniper * multiplier));
+            config.freeLook = Math.min(100, Math.round(config.freeLook * multiplier));
+            
+            document.getElementById('manualSensiDisplay').innerHTML = `
+                <div class="sensi-item">
+                    <div class="label">General</div>
+                    <div class="value">${config.general}</div>
+                </div>
+                <div class="sensi-item">
+                    <div class="label">Punto Rojo</div>
+                    <div class="value">${config.redDot}</div>
+                </div>
+                <div class="sensi-item">
+                    <div class="label">Mira 2x</div>
+                    <div class="value">${config.x2}</div>
+                </div>
+                <div class="sensi-item">
+                    <div class="label">Mira 4x</div>
+                    <div class="value">${config.x4}</div>
+                </div>
+                <div class="sensi-item">
+                    <div class="label">Francotirador</div>
+                    <div class="value">${config.sniper}</div>
+                </div>
+                <div class="sensi-item">
+                    <div class="label">Vista Libre</div>
+                    <div class="value">${config.freeLook}</div>
+                </div>
+            `;
+            
+            document.getElementById('manualResults').classList.remove('hidden');
+        }
+
+        function importConfig() {
+            const code = document.getElementById('importCode').value.trim();
+            
+            if (!code) {
+                showToast('Pega un código primero', 'error');
+                return;
+            }
+            
+            try {
+                // Try JSON first
+                let config = JSON.parse(code);
+                displayImported(config);
+            } catch (e) {
+                // Try to parse text format
+                const general = code.match(/General[:\s]+(\d+)/);
+                const redDot = code.match(/Punto Rojo[:\s]+(\d+)/);
+                const x2 = code.match(/Mira 2x[:\s]+(\d+)/);
+                const x4 = code.match(/Mira 4x[:\s]+(\d+)/);
+                const sniper = code.match(/Francotirador[:\s]+(\d+)/);
+                const free = code.match(/Vista Libre[:\s]+(\d+)/);
+                
+                if (general) {
+                    displayImported({
+                        general: parseInt(general[1]),
+                        redDot: redDot ? parseInt(redDot[1]) : 50,
+                        x2: x2 ? parseInt(x2[1]) : 50,
+                        x4: x4 ? parseInt(x4[1]) : 50,
+                        sniper: sniper ? parseInt(sniper[1]) : 50,
+                        freeLook: free ? parseInt(free[1]) : 50
+                    });
+                } else {
+                    showToast('Formato no reconocido', 'error');
+                }
+            }
+        }
+
+        function displayImported(config) {
+            document.getElementById('importedDisplay').innerHTML = `
+                <div class="sensi-item">
+                    <div class="label">General</div>
+                    <div class="value">${config.general || 50}</div>
+                </div>
+                <div class="sensi-item">
+                    <div class="label">Punto Rojo</div>
+                    <div class="value">${config.redDot || 50}</div>
+                </div>
+                <div class="sensi-item">
+                    <div class="label">Mira 2x</div>
+                    <div class="value">${config.x2 || 50}</div>
+                </div>
+                <div class="sensi-item">
+                    <div class="label">Mira 4x</div>
+                    <div class="value">${config.x4 || 50}</div>
+                </div>
+                <div class="sensi-item">
+                    <div class="label">Francotirador</div>
+                    <div class="value">${config.sniper || 50}</div>
+                </div>
+                <div class="sensi-item">
+                    <div class="label">Vista Libre</div>
+                    <div class="value">${config.freeLook || 50}</div>
+                </div>
+            `;
+            document.getElementById('importedConfig').classList.remove('hidden');
+            showToast('Configuración importada');
+        }
+    </script>
+</body>
+</html>
